@@ -6,6 +6,8 @@ const LoginContainer = () => {
   const {
     email,
     password,
+    emailError,
+    passwordError,
     handleEmailChange,
     handlePasswordChange,
     handleLoginButtonClick,
@@ -28,16 +30,16 @@ const LoginContainer = () => {
                 type="email"
                 onChange={handleEmailChange}
                 value={email}
-                isError={false}
-                error=""
+                isError={emailError !== ''}
+                error={emailError}
               />
               <InputContainer
                 name="비밀번호"
                 type="password"
                 onChange={handlePasswordChange}
                 value={password}
-                isError={false}
-                error=""
+                isError={passwordError !== ''}
+                error={passwordError}
               />
             </div>
             <RectButton
