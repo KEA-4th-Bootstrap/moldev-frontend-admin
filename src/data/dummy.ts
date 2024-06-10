@@ -2,7 +2,7 @@ import { reportItemType } from './type';
 
 export const dummyReport: reportItemType = {
   reportId: 1,
-  reportType: 'post',
+  reportType: 'POST',
   reporterId: 'moldev',
   reporteeId: 'moldev',
   contentId: 1,
@@ -12,10 +12,10 @@ export const dummyReport: reportItemType = {
 
 export const dummyReportComment: reportItemType = {
   reportId: 2,
-  reportType: 'comment',
+  reportType: 'REPLY',
   reporterId: 'moldev',
   reporteeId: 'moldev',
   contentId: 1,
-  reason: '혐오표현',
+  reason: '혐오 표현',
   reportDate: '2021-10-10',
 };
