@@ -59,7 +59,7 @@ const PagenationContainer = ({
         {pageList().map((page) => (
           <PagenationItem
             key={page}
-            isClicked={page === currentIdx}
+            isClicked={page - 1 === currentIdx}
             borderSide="right"
             onClick={() => onClickPage(page)}
             isAble={true}
