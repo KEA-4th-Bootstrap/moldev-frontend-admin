@@ -7,6 +7,9 @@ import CheckboxRow from '../components/common/CheckboxRow';
 import EmptyContainer from '../components/common/EmptyContainer';
 import PagenationContainer from '../components/common/PagenationContainer';
 import TotalLengthContainer from '../components/common/TotalLengthContainer';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+import ErrorContainer from '../components/common/ErrorContainer';
+import DeletePage from './DeletePage';
 
 const UserListPage = () => {
   const {
@@ -17,8 +20,15 @@ const UserListPage = () => {
     onChangeFilterOption,
     totalLength,
     userList,
+    userListIsLoading,
+    userListIsError,
     currentIdx,
     setCurrentIdx,
+    onClickDeleteUser,
+    isDeleteOpen,
+    selectedUser,
+    onClickDeleteButton,
+    onClickCancelButton,
   } = useUserListPage();
   return (
     <div className="w-full min-h-full grow flex flex-col items-start justify-start">
@@ -54,12 +64,11 @@ const UserListPage = () => {
           <thead className="pb-8 border-b-2 border-admin-gray-border">
             <tr>
               <th className="w-[100px]">회원번호</th>
-              <th className="w-[200px]">이메일</th>
-              <th className="w-[200px]">몰디브아이디</th>
+              <th className="w-[300px]">이메일</th>
+              <th className="w-[300px]">몰디브아이디</th>
               <th className="w-[150px]">유저명</th>
               <th className="grow">섬 이름</th>
-              <th className="w-[100px]">누적 신고 수</th>
-              <th className="w-[100px]">마케팅 동의</th>
+              <th className="w-[150px]">마케팅 동의</th>
               <th className="w-[100px]">비고</th>
             </tr>
           </thead>
@@ -67,7 +76,15 @@ const UserListPage = () => {
             <tbody>
               <tr>
                 <td colSpan={8}>
-                  <EmptyContainer />
+                  {userListIsLoading ? (
+                    <LoadingSpinner />
+                  ) : userListIsError ? (
+                    <ErrorContainer />
+                  ) : (
+                    <div>
+                      <EmptyContainer />
+                    </div>
+                  )}
                 </td>
               </tr>
             </tbody>
@@ -82,17 +99,18 @@ const UserListPage = () => {
           ) : (
             <tbody>
               {userList.map((user) => (
-                <tr key={user.id}>
-                  <td>{user.id}</td>
+                <tr key={user.memberId}>
+                  <td>{user.memberId}</td>
                   <td>{user.email}</td>
                   <td>{user.moldevId}</td>
                   <td>{user.nickname}</td>
                   <td>{user.islandName}</td>
-                  <td>{user.totalWarning}</td>
-                  <td>{user.marketingAgree ? '동의' : '미동의'}</td>
+                  <td>{user.isMarketingAgree ? '동의' : '미동의'}</td>
                   <td
                     className="text-negative cursor-pointer hover:underline underline-offset-2"
-                    onClick={() => {}}
+                    onClick={() => {
+                      onClickDeleteUser(user);
+                    }}
                   >
                     탈퇴하기
                   </td>
@@ -102,11 +120,18 @@ const UserListPage = () => {
           )}
         </table>
       </div>
-      {userList.length > 0 && (
+      {userList && userList.length > 0 && (
         <PagenationContainer
           totalLength={totalLength}
           currentIdx={currentIdx}
           setCurrentIdx={setCurrentIdx}
+        />
+      )}
+      {isDeleteOpen && selectedUser && (
+        <DeletePage
+          moldevId={selectedUser.moldevId}
+          clickDeleteButton={onClickDeleteButton}
+          clickCancelButton={onClickCancelButton}
         />
       )}
     </div>

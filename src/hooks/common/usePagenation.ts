@@ -28,15 +28,15 @@ export const usePagenation = (
   };
 
   const onClickPage = (idx: number) => {
-    setCurrentIdx(idx);
+    setCurrentIdx(idx - 1);
   };
 
   const onClickFirst = () => {
-    setCurrentIdx(1);
+    setCurrentIdx(0);
   };
 
   const onClickLast = () => {
-    setCurrentIdx(totalIdx);
+    setCurrentIdx(totalIdx - 1);
   };
 
   const onClickPrev = () => {
