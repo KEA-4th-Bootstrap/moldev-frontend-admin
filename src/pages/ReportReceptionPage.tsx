@@ -10,6 +10,8 @@ import ReportTypeTag from '../components/reportPage/ReportTypeTag';
 import ReportButton from '../components/reportPage/ReportButton';
 import PagenationContainer from '../components/common/PagenationContainer';
 import DetailModal from '../components/reportPage/DetailModal';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+import ErrorContainer from '../components/common/ErrorContainer';
 
 const ReportReceptionPage = () => {
   const {
@@ -20,6 +22,8 @@ const ReportReceptionPage = () => {
     onChangeFilterOption,
     totalLength,
     reportReceptionList,
+    reportReceptionIsLoading,
+    reportReceptionIsError,
     currentIdx,
     setCurrentIdx,
     selectedReport,
@@ -70,7 +74,15 @@ const ReportReceptionPage = () => {
             <tbody>
               <tr>
                 <td colSpan={6}>
-                  <EmptyContainer />
+                  {reportReceptionIsLoading ? (
+                    <LoadingSpinner />
+                  ) : reportReceptionIsError ? (
+                    <ErrorContainer />
+                  ) : (
+                    <div>
+                      <EmptyContainer />
+                    </div>
+                  )}
                 </td>
               </tr>
             </tbody>
@@ -85,7 +97,7 @@ const ReportReceptionPage = () => {
           ) : (
             <tbody>
               {reportReceptionList
-                .slice((currentIdx - 1) * 10, currentIdx * 10)
+                .slice(currentIdx * 10, (currentIdx + 1) * 10)
                 .map((report) => (
                   <tr key={report.reportId}>
                     <td>{report.reportId}</td>
@@ -109,7 +121,7 @@ const ReportReceptionPage = () => {
           )}
         </table>
       </div>
-      {reportReceptionList.length > 0 && (
+      {reportReceptionList && reportReceptionList.length > 0 && (
         <PagenationContainer
           totalLength={totalLength}
           currentIdx={currentIdx}
