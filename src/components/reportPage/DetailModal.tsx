@@ -6,6 +6,9 @@ import ReportTypeTag from './ReportTypeTag';
 import RectButton from '../common/RectButton';
 import { useReportDetailModal } from '../../hooks/common/useReportDetailModal';
 import ReportProcessItem from './ReportProcessItem';
+import LoadingSpinner from '../common/LoadingSpinner';
+import ErrorContainer from '../common/ErrorContainer';
+import EmptyContainer from '../common/EmptyContainer';
 
 const DetailModal = ({
   report,
@@ -14,8 +17,16 @@ const DetailModal = ({
   report: reportItemType;
   onClose: () => void;
 }) => {
-  const { processType, isProcessOpen, onProcessClick, handleProcessType } =
-    useReportDetailModal(report);
+  const {
+    processType,
+    isProcessOpen,
+    onProcessClick,
+    handleProcessType,
+    reportDetail,
+    isLoading,
+    isError,
+    handleProcessButton,
+  } = useReportDetailModal(report, onClose);
   return (
     <div className="min-w-[600px] max-w-[800px] w-1/3 flex flex-col gap-y-30 items-center justify-center pt-36 px-40 rounded-modal bg-white relative">
       <Close
@@ -28,33 +39,57 @@ const DetailModal = ({
       <div className="w-full flex flex-col items-start justify-start gap-y-16">
         <div className="w-full flex items-center justify-start gap-x-20">
           <div className="font-semibold text-14 text-gray-800">유형</div>
-          {report.reportType === 'post' ? (
-            <ReportTypeTag type="post" />
+          {report.reportType === 'POST' ? (
+            <ReportTypeTag type="POST" />
           ) : (
-            <ReportTypeTag type="comment" />
+            <ReportTypeTag type="REPLY" />
           )}
         </div>
-        <div className="w-full flex flex-col items-start justify-start gap-y-10">
-          <div className="font-semibold text-14 text-gray-800">신고 사유</div>
-          <div className="w-full px-22 py-13 rounded-block bg-gray-50 font-medium flex items-center justify-start gap-x-10">
-            <div className="text-gray-800">{report.reason}</div>
-            {report.reportType === 'comment' && (
-              <>
-                <div className="bg-gray-200 h-[20px] w-px" />
-                <div className="text-gray-400">{report.reporteeId}</div>
-              </>
-            )}
-          </div>
-        </div>
-        <div className="w-full flex flex-col items-start justify-start gap-y-10">
-          <div className="font-semibold text-14 text-gray-800">원본 URL</div>
-          <div className="w-full px-22 py-13 rounded-block bg-white border border-gray-50 flex items-center justify-start gap-x-10">
-            <div className="grow font-medium text-14 text-gray-800">
-              {report.contentId}
+        {!reportDetail ? (
+          isLoading ? (
+            <div className="w-full flex flex-col items-center justify-center">
+              <LoadingSpinner />
             </div>
-            <Move width={24} height={24} />
-          </div>
-        </div>
+          ) : isError ? (
+            <div className="w-full flex flex-col items-center justify-center">
+              <ErrorContainer />
+            </div>
+          ) : (
+            <div className="w-full flex flex-col items-center justify-center">
+              <EmptyContainer />
+            </div>
+          )
+        ) : (
+          <>
+            <div className="w-full flex flex-col items-start justify-start gap-y-10">
+              <div className="font-semibold text-14 text-gray-800">
+                신고 사유
+              </div>
+              <div className="w-full px-22 py-13 rounded-block bg-gray-50 font-medium flex items-center justify-start gap-x-10">
+                <div className="text-gray-800">{report.reason}</div>
+                {report.reportType === 'REPLY' && (
+                  <>
+                    <div className="bg-gray-200 h-[20px] w-px" />
+                    <div className="text-gray-400">
+                      {reportDetail.replyContent}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+            <div className="w-full flex flex-col items-start justify-start gap-y-10">
+              <div className="font-semibold text-14 text-gray-800">
+                원본 URL
+              </div>
+              <div className="w-full px-22 py-13 rounded-block bg-white border border-gray-50 flex items-center justify-start gap-x-10">
+                <div className="grow font-medium text-14 text-gray-800">
+                  {reportDetail.title}
+                </div>
+                <Move width={24} height={24} />
+              </div>
+            </div>
+          </>
+        )}
         <div className="w-full flex items-center justify-start gap-x-20 text-14 text-gray-800">
           <div className="font-semibold">신고 대상 계정</div>
           <div className="font-normal grow">{report.reporteeId}</div>
@@ -117,14 +152,19 @@ const DetailModal = ({
             />
             <ReportProcessItem
               text="영구 정지"
-              onClick={() => handleProcessType('forever')}
-              isClicked={processType === 'forever'}
+              onClick={() => handleProcessType('36500')}
+              isClicked={processType === '36500'}
             />
           </div>
         </div>
         <div className="flex items-center justify-center gap-x-8">
           <RectButton text="취소" type="cancel" w={'90px'} onClick={onClose} />
-          <RectButton text="처리" type="select" w={'90px'} onClick={() => {}} />
+          <RectButton
+            text="처리"
+            type="select"
+            w={'90px'}
+            onClick={handleProcessButton}
+          />
         </div>
       </div>
     </div>
